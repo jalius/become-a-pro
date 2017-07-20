@@ -26,3 +26,5 @@
 *.exe
 *.out
 *.app
+settings\.cfg~
+bin/Debug/
