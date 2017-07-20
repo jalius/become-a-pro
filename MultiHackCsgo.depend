@@ -1,0 +1,171 @@
+# depslib dependency file v1.0
+1498864023 source:/home/jalius/Projects/MultiHackCsgo/src/hack.cpp
+	"hack.h"
+
+1498863206 /home/jalius/Projects/MultiHackCsgo/include/hack.h
+	<X11/Xlib.h>
+	<X11/Xutil.h>
+	<X11/keysym.h>
+	<X11/keysymdef.h>
+	<X11/extensions/XTest.h>
+	<chrono>
+	<thread>
+	<stddef.h>
+	<libconfig.h++>
+	<iostream>
+	<atomic>
+	"remote.h"
+	"types.h"
+
+1498863976 source:/home/jalius/Projects/MultiHackCsgo/main.cpp
+	<iostream>
+	<X11/Xlib.h>
+	<X11/Xutil.h>
+	<X11/keysym.h>
+	<X11/keysymdef.h>
+	<X11/extensions/XTest.h>
+	<unistd.h>
+	<string>
+	<cstdio>
+	<cstdlib>
+	<thread>
+	<chrono>
+	<libconfig.h++>
+	<hack.h>
+
+1498809470 /home/jalius/Projects/MultiHackCsgo/include/remote.h
+	<sys/types.h>
+	<sys/stat.h>
+	<sys/wait.h>
+	<limits.h>
+	<sys/uio.h>
+	<stdlib.h>
+	<string.h>
+	<unistd.h>
+	<dirent.h>
+	<unordered_map>
+	<string>
+	<vector>
+	<sstream>
+	<fstream>
+	<inttypes.h>
+
+1498806116 /home/jalius/Projects/MultiHackCsgo/include/types.h
+
+1498805887 source:/home/jalius/Projects/MultiHackCsgo/src/remote.cpp
+	"remote.h"
+
+1500028310 source:/home/jalius/projects/csgo-multihack/main.cpp
+	<iostream>
+	<X11/Xlib.h>
+	<X11/Xutil.h>
+	<X11/keysym.h>
+	<X11/keysymdef.h>
+	<X11/extensions/XTest.h>
+	<unistd.h>
+	<string>
+	<cstdio>
+	<cstdlib>
+	<thread>
+	<chrono>
+	<libconfig.h++>
+	<hack.h>
+
+1500273072 /home/jalius/projects/csgo-multihack/include/hack.h
+	<X11/Xlib.h>
+	<X11/Xutil.h>
+	<X11/keysym.h>
+	<X11/keysymdef.h>
+	<X11/extensions/XTest.h>
+	<chrono>
+	<thread>
+	<stddef.h>
+	<libconfig.h++>
+	<iostream>
+	<atomic>
+	<cmath>
+	"remote.h"
+	"types.h"
+
+1499930692 /home/jalius/projects/csgo-multihack/include/remote.h
+	<sys/types.h>
+	<sys/stat.h>
+	<sys/wait.h>
+	<limits.h>
+	<sys/uio.h>
+	<stdlib.h>
+	<string.h>
+	<unistd.h>
+	<dirent.h>
+	<unordered_map>
+	<string>
+	<vector>
+	<sstream>
+	<fstream>
+	<inttypes.h>
+
+1500003830 /home/jalius/projects/csgo-multihack/include/types.h
+
+1500323475 source:/home/jalius/projects/csgo-multihack/src/hack.cpp
+	"hack.h"
+
+1499932718 source:/home/jalius/projects/csgo-multihack/src/remote.cpp
+	"remote.h"
+
+1500028310 source:/home/jalius/Projects/csgo-multihack/main.cpp
+	<iostream>
+	<X11/Xlib.h>
+	<X11/Xutil.h>
+	<X11/keysym.h>
+	<X11/keysymdef.h>
+	<X11/extensions/XTest.h>
+	<unistd.h>
+	<string>
+	<cstdio>
+	<cstdlib>
+	<thread>
+	<chrono>
+	<libconfig.h++>
+	<hack.h>
+
+1500028422 /home/jalius/Projects/csgo-multihack/include/hack.h
+	<X11/Xlib.h>
+	<X11/Xutil.h>
+	<X11/keysym.h>
+	<X11/keysymdef.h>
+	<X11/extensions/XTest.h>
+	<chrono>
+	<thread>
+	<stddef.h>
+	<libconfig.h++>
+	<iostream>
+	<atomic>
+	<cmath>
+	"remote.h"
+	"types.h"
+
+1499930692 /home/jalius/Projects/csgo-multihack/include/remote.h
+	<sys/types.h>
+	<sys/stat.h>
+	<sys/wait.h>
+	<limits.h>
+	<sys/uio.h>
+	<stdlib.h>
+	<string.h>
+	<unistd.h>
+	<dirent.h>
+	<unordered_map>
+	<string>
+	<vector>
+	<sstream>
+	<fstream>
+	<inttypes.h>
+
+1500003830 /home/jalius/Projects/csgo-multihack/include/types.h
+
+1499932718 source:/home/jalius/Projects/csgo-multihack/src/remote.cpp
+	"remote.h"
+
+1500031335 source:/home/jalius/Projects/csgo-multihack/src/hack.cpp
+	"hack.h"
+
