@@ -105,6 +105,7 @@ public:
     void setVAng(QAngle *newAngle);
     QAngle calcAngle(Vector *source, Vector *target);
     BoneMatrix getBones(void* bonePtr, int bone);
+    void Smoothing(QAngle* source,QAngle* target);
 
     Entity entities[64];
     void* bonePtrs[64];
@@ -141,8 +142,10 @@ public:
     Vector myPos;
     Entity myEnt;
 
+    bool foundTarget;
     bool shouldShoot;
     bool isAiming;
+    bool acquiring;
 
     Entity *closestEnt;
     Entity *targetedEnt;
@@ -175,6 +178,7 @@ public:
     float flashMax;
     float fov;
     bool rage;
+    float percentSmoothing;
 };
 
 #endif

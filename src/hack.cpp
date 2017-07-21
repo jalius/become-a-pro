@@ -17,20 +17,14 @@ void hack::aim(){
     if(isConnected!=1){
         return;
     }
-    struct hack::GlowObjectDefinition_t g_glow[1024];
-    bzero(g_glow, sizeof(g_glow));
-    bzero(entities, sizeof(entities));
-    bzero(bonePtrs, sizeof(bonePtrs));
-
     unsigned int serverDetail;
     unsigned long one;
     unsigned long two;
-    //unsigned int shotsFired;
+    unsigned int shotsFired;
     BoneMatrix theirBones;
     unsigned long localPlayer = 0;
     shouldShoot = false;
     char myLifeXD = LIFE_DEAD;
-    bool foundTarget=false;
     int AltTwo;
     csgo.Read((void*)m_addressOfAlt2,&AltTwo,sizeof(long));
     if(localPlayer!=0){
@@ -51,20 +45,32 @@ void hack::aim(){
 
     csgo.Read((void*)(localPlayer+0x3764),&punch,sizeof(QAngle));
 
-    //csgo.Read((void*)(localPlayer+0xABB0), &shotsFired,sizeof(int));
+    csgo.Read((void*)(localPlayer+0xABB0), &shotsFired,sizeof(int));
 
     csgo.Read((void*)(unsigned long)addressOfViewAngle, &(hack::viewAngle),sizeof(QAngle));
 
+    char enemyLifeState=LIFE_DEAD;
+
+    csgo.Read((void*)bonePtrs[idclosestEnt]-0x2c70+0x293,&enemyLifeState,sizeof(char));
+
 	hack::CGlowObjectManager manager;
-	if(isAiming){
-	        myPos.x = myEnt.m_vecNetworkOrigin.x;
+    punchDelta.x = punch.x-hack::oldPunch.x;
+    punchDelta.y = punch.y-hack::oldPunch.y;
+	if(isAiming&&!rage){
+        myPos.x = myEnt.m_vecNetworkOrigin.x;
         myPos.y = myEnt.m_vecNetworkOrigin.y;
         myPos.z = myEnt.m_vecNetworkOrigin.z + myEnt.m_vecViewOffset.z;
-
         newAngle = viewAngle;
+        if(enemyLifeState!=LIFE_ALIVE){
+            foundTarget=false;
+        }
 	}
 	else{
-        lowestDistance = -1.0;
+    struct hack::GlowObjectDefinition_t g_glow[1024];
+    bzero(g_glow, sizeof(g_glow));
+    bzero(entities, sizeof(entities));
+    bzero(bonePtrs, sizeof(bonePtrs));
+    lowestDistance = -1.0;
     closestFootDistance=-1.0;
 	if (!csgo.Read((void*) m_addressOfGlowPointer, &manager, sizeof(hack::CGlowObjectManager))) {
 		cout<<("Failed to read glowClassAddress")<<endl;
@@ -126,12 +132,12 @@ void hack::aim(){
             clampAngle(&aimDelta);
             float xhairDistance = sqrt((aimDelta.x*aimDelta.x)+(aimDelta.y*aimDelta.y));
             //cout<< "aimDelta.x, y = "<<aimDelta.x<<", "<<aimDelta.y<<endl;
-            //cout<<std::dec<<entities[i].ID<<" crosshair distance = "<<xhairDistance<<endl;
-            if(xhairDistance<fov){//(||rage)
-                cout<<std::dec<<entities[i].ID<<" crosshair distance = "<<xhairDistance<<endl;
-                float checkClosestFootDistance = sqrt((theirPos.x-myPos.x)*(theirPos.x-myPos.x)+(theirPos.y-myPos.y)*(theirPos.y-myPos.y)+(theirPos.z-myPos.z)*(theirPos.z-myPos.z));
+            if(xhairDistance<=lowestDistance||lowestDistance==-1.0){//(||rage)
+                //cout<<std::dec<<entities[i].ID<<" crosshair distance = "<<sqrt(xhairDistance)<<endl;
+                //cout<<std::dec<<entities[i].ID<<" crosshair distance = "<<xhairDistance<<endl;
+                //float checkClosestFootDistance = sqrt((theirPos.x-myPos.x)*(theirPos.x-myPos.x)+(theirPos.y-myPos.y)*(theirPos.y-myPos.y)+(theirPos.z-myPos.z)*(theirPos.z-myPos.z));
                 //cout << "checkClosestFootDistance: " <<checkClosestFootDistance<< "closestFootDistance: "<<closestFootDistance<<endl;
-                if(checkClosestFootDistance<closestFootDistance||closestFootDistance==-1.0){
+                /*if(checkClosestFootDistance<closestFootDistance||closestFootDistance==-1.0){
                     //cout<<"setting new: "<<checkClosestFootDistance<<endl;
                     lowestDistance=xhairDistance;
                     closestEnt=&entities[i];
@@ -139,7 +145,12 @@ void hack::aim(){
                     closestFootDistance = checkClosestFootDistance;
                     foundTarget = true;
                     //cout<<"new: " <<closestFootDistance<<endl;
-                }
+                }*/
+                lowestDistance=xhairDistance;
+                closestEnt=&entities[i];
+                idclosestEnt = entities[i].ID;
+                foundTarget = true;
+                //cout<<"set true ft"<<foundTarget<<endl;
                 //cout<<"closest ent = "<<entities[i].ID<<endl;
             }
         }
@@ -147,13 +158,15 @@ void hack::aim(){
 	}//else if (!isAiming)
 
     //cout<<std::dec<<"\nidclosestEnt: "<<idclosestEnt<<endl;
-    if(!foundTarget&&!isAiming){
-       //cout<<"ignoring ent world"<<endl;
+    if(!foundTarget&&isAiming||idclosestEnt==0){
         if(AltTwo==5){
             csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
         }
         if(AltTwo==4){
             csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
+            /*newAngle.x-=punch.x;
+            newAngle.y-=punch.y;*/
+            isAiming=false;
         }
     }
     else{
@@ -163,28 +176,52 @@ void hack::aim(){
         theirPos.x = theirBones.x;
         theirPos.y = theirBones.y;
         theirPos.z = theirBones.z;
+        if(enemyLifeState!=LIFE_ALIVE||shotsFired>1){
+            acquiring=false;
+        }
         //cout<<"not ignorning"<<endl;
-        if(AltTwo==5){
-            //cout<<fov<<endl;
+        if(AltTwo==5||acquiring){
+            //cout<<"1fov: "<<fov<<" lowestDistance: "<<lowestDistance<<endl;
+            aimDelta=calcAngle(&myPos,&theirPos);
+            aimDelta.x -=viewAngle.x+(punch.x*2);
+            aimDelta.y -=viewAngle.y+(punch.y*2);
+            clampAngle(&aimDelta);
+            float xhairDistance = sqrt((aimDelta.x*aimDelta.x)+(aimDelta.y*aimDelta.y));
+            lowestDistance=xhairDistance;
+            //cout<<"2fov: "<<fov<<" lowestDistance: "<<lowestDistance<<endl;
             if(lowestDistance<=fov&&lowestDistance!=-1.0){
+                acquiring = true;
             //cout<<std::dec<<"targeting closestEnt: "<<idclosestEnt<<endl;
-                if(lowestDistance<.5){
+                if(lowestDistance<.1){
                     shouldShoot=true;
-                    isAiming =true;
+                    acquiring =false;
+                    cout<<"shouldshoot: "<<shouldShoot<<endl;
+                    cout<<acquiring<<endl;
                 }
                 newAngle=calcAngle(&myPos,&theirPos);
                 newAngle.x-=punch.x*2;
                 newAngle.y-=punch.y*2;
+                Smoothing(&viewAngle,&newAngle);
+                isAiming =true;
                 //cout<<"newAngle.x, "<<"newAngle.y :"<<newAngle.x<<", "<<newAngle.y<<endl;
             }
             else{
                 shouldShoot=true;
             }
-            if(shouldShoot){
+            if(shouldShoot&&!acquiring){
                 csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
+                usleep(20000);
+                cout<<"shooting"<<endl;
+            }
+            if(acquiring&&shouldShoot){
+                csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
+                usleep(20000);
+                csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
+                usleep(200);
+                cout<<"should be shooting...."<<endl;
             }
         }
-        if(AltTwo==4){
+        else if(AltTwo==4){
             if(!shouldShoot){
                 csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
             }
@@ -208,8 +245,6 @@ void hack::aim(){
 
     //rcs block
     if(!isAiming&&alwaysRCS){
-    punchDelta.x = punch.x-hack::oldPunch.x;
-    punchDelta.y = punch.y-hack::oldPunch.y;
     if(alwaysRCS){
         if((punchDelta.y!=0.0||punchDelta.x!=0.0)){//&&shotsFired>0
                 /*if(shotsFired>10){
@@ -230,7 +265,24 @@ void hack::aim(){
     }
     if (newAngle.x!=viewAngle.x||newAngle.y!=viewAngle.y){
         setVAng(&newAngle);
+        cout<<"set vang {" <<newAngle.x<< ", "<<newAngle.y<<" } ent id: "<<idclosestEnt<<endl;
     }
+}
+void hack::Smoothing(QAngle* source, QAngle* target){
+    QAngle delta;
+    delta.x = target->x - source->x;
+    delta.y = target->y - source->y;
+    cout<< "Delta.x, y = "<<delta.x<<", "<<delta.y<<endl;
+    clampAngle(&delta);
+    //float sqDistance = sqrt((delta.x*delta.x)+(delta.y*delta.y));
+    delta.x*=percentSmoothing;//*(1/(sqDistance));
+    delta.y*=percentSmoothing;//*(1/(sqDistance));
+    clampAngle(&delta);
+    cout<< "After Delta.x, y = "<<delta.x<<", "<<delta.y<<endl;
+    target->x=source->x+delta.x;
+    target->y=source->y+delta.y;
+    usleep(200);
+
 }
 QAngle hack::calcAngle(Vector* source, Vector* target){
     QAngle angle;
@@ -306,12 +358,23 @@ void hack::bhop(){
         if(iAlt1Status==5&&onGround>0){
             //cout<<"jumping\n:)"<<endl;
             csgo.Write((void*)((unsigned long)m_addressOfJump),&toggleOn,sizeof(int));
-            this_thread::sleep_for(chrono::milliseconds(2));
+            this_thread::sleep_for(chrono::microseconds(500));
             csgo.Write((void*)((unsigned long)m_addressOfJump),&toggleOff, sizeof(int));
             /*XFlush(display);
             XTestFakeKeyEvent(display, 65, true, 0);
             this_thread::sleep_for(chrono::milliseconds(1));
             XTestFakeKeyEvent(display, 65, false, 0);*/
+        }
+    }
+    else{
+        if(iAlt1Status==5){
+            //cout<<"jumping\n:)"<<endl;
+            csgo.Write((void*)((unsigned long)m_addressOfJump),&toggleOn,sizeof(int));
+            this_thread::sleep_for(chrono::microseconds(500));
+        }
+        else{
+            csgo.Write((void*)((unsigned long)m_addressOfJump),&toggleOff, sizeof(int));
+            this_thread::sleep_for(chrono::microseconds(500));
         }
     }
 }
@@ -653,13 +716,14 @@ void hack::init(){
     //settings
 	ShouldGlow = true;
 	ShouldTrigger = false;
-	ShouldBhop = false;
-	NoFlash = false;
+	ShouldBhop = true;
+	NoFlash = true;
 	alwaysRCS = false;
 	rage=false;
     bone = ::atof(getConfigValue("bone").c_str());
 	fov = ::atof(getConfigValue("fov").c_str());
 	flashMax = ::atof(getConfigValue("flash_max").c_str());
+	percentSmoothing = ::atof(getConfigValue("aim_smooth_percent").c_str());
 	if(flashMax<0||flashMax>255)
     {
         flashMax=70;
