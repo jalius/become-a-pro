@@ -122,7 +122,7 @@ void hack::aim(){
             theirPos.y = theirBones.y;
             theirPos.z = theirBones.z;
             if(theirPos.y==0&&theirPos.x==0&&theirPos.z==0){
-                cout<<"0 0 0 found"<<endl;
+                //cout<<"0 0 0 found"<<endl;
                 continue;
 
             }
@@ -147,6 +147,7 @@ void hack::aim(){
                     //cout<<"new: " <<closestFootDistance<<endl;
                 }*/
                 lowestDistance=xhairDistance;
+                //cout<<"Lowest distance: "<<lowestDistance<<endl;
                 closestEnt=&entities[i];
                 idclosestEnt = entities[i].ID;
                 foundTarget = true;
@@ -178,7 +179,7 @@ void hack::aim(){
         theirPos.z = theirBones.z;
         if(enemyLifeState!=LIFE_ALIVE||shotsFired!=0){
             acquiring=false;
-            cout<<shotsFired<<endl;
+            //cout<<shotsFired<<endl;
         }
         //cout<<"not ignorning"<<endl;
         if(AltTwo==5){
@@ -193,10 +194,10 @@ void hack::aim(){
             if(lowestDistance<=fov&&lowestDistance!=-1.0){
                 acquiring = true;
             //cout<<std::dec<<"targeting closestEnt: "<<idclosestEnt<<endl;
-                if(lowestDistance<.05){
+                if(lowestDistance<.1){
                     shouldShoot=true;
-                    cout<<"shouldshoot: "<<shouldShoot<<endl;
-                    cout<<acquiring<<endl;
+                    //cout<<"shouldshoot: "<<shouldShoot<<endl;
+                    //cout<<acquiring<<endl;
                 }
                 newAngle=calcAngle(&myPos,&theirPos);
                 newAngle.x-=punch.x*2;
@@ -208,24 +209,8 @@ void hack::aim(){
             else{
                 shouldShoot=true;
             }
-            if(shouldShoot){
-                csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
-                usleep(2000);
-                cout<<"shooting"<<endl;
-            }
         }
         if(AltTwo==4){
-            if(!shouldShoot){
-                csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
-            }
-            if(acquiring&&shouldShoot){
-                csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
-                usleep(40000);
-                csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
-                usleep(200);
-                acquiring=false;
-                cout<<"should be shooting...."<<endl;
-            }
             isAiming=false;
         }
     }
@@ -266,7 +251,27 @@ void hack::aim(){
     }
     if (newAngle.x!=viewAngle.x||newAngle.y!=viewAngle.y){
         setVAng(&newAngle);
-        cout<<"set vang {" <<newAngle.x<< ", "<<newAngle.y<<" } ent id: "<<idclosestEnt<<endl;
+        //cout<<"set vang {" <<newAngle.x<< ", "<<newAngle.y<<" } ent id: "<<idclosestEnt<<endl;
+    }
+    if(foundTarget&&idclosestEnt!=0){
+    if(AltTwo==5){
+        if(shouldShoot){
+            csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
+            usleep(2000);
+        }
+    }
+    else{
+    if(!shouldShoot){
+        csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
+    }
+    if(acquiring&&shouldShoot){
+        csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
+        usleep(40000);
+        csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
+        usleep(10000);
+        acquiring=false;
+    }
+    }
     }
 }
 void hack::Smoothing(QAngle* source, QAngle* target){
