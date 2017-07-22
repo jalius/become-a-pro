@@ -182,7 +182,7 @@ void hack::aim(){
             //cout<<shotsFired<<endl;
         }
         //cout<<"not ignorning"<<endl;
-        if(AltTwo==5){
+        if(AltTwo==5||acquiring){
             //cout<<"1fov: "<<fov<<" lowestDistance: "<<lowestDistance<<endl;
             aimDelta=calcAngle(&myPos,&theirPos);
             aimDelta.x -=viewAngle.x+(punch.x*2);
@@ -190,14 +190,12 @@ void hack::aim(){
             clampAngle(&aimDelta);
             float xhairDistance = sqrt((aimDelta.x*aimDelta.x)+(aimDelta.y*aimDelta.y));
             lowestDistance=xhairDistance;
-            //cout<<"2fov: "<<fov<<" lowestDistance: "<<lowestDistance<<endl;
+            cout<<"2fov: "<<fov<<" lowestDistance: "<<lowestDistance<<endl;
             if(lowestDistance<=fov&&lowestDistance!=-1.0){
                 acquiring = true;
             //cout<<std::dec<<"targeting closestEnt: "<<idclosestEnt<<endl;
                 if(lowestDistance<.1){
                     shouldShoot=true;
-                    //cout<<"shouldshoot: "<<shouldShoot<<endl;
-                    //cout<<acquiring<<endl;
                 }
                 newAngle=calcAngle(&myPos,&theirPos);
                 newAngle.x-=punch.x*2;
@@ -257,7 +255,7 @@ void hack::aim(){
     if(AltTwo==5){
         if(shouldShoot){
             csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
-            usleep(2000);
+            usleep(10000);
         }
     }
     else{
@@ -278,7 +276,7 @@ void hack::Smoothing(QAngle* source, QAngle* target){
     QAngle delta;
     delta.x = target->x - source->x;
     delta.y = target->y - source->y;
-    cout<< "Delta.x, y = "<<delta.x<<", "<<delta.y<<endl;
+    //cout<< "Delta.x, y = "<<delta.x<<", "<<delta.y<<endl;
     clampAngle(&delta);
     float sqDistance = sqrt((delta.x*delta.x)+(delta.y*delta.y));
     float coefficient = percentSmoothing*(1/(sqDistance));
@@ -288,7 +286,7 @@ void hack::Smoothing(QAngle* source, QAngle* target){
     delta.x*=coefficient;
     delta.y*=coefficient;
     clampAngle(&delta);
-    cout<< "After Delta.x, y = "<<delta.x<<", "<<delta.y<<endl;
+    //cout<< "After Delta.x, y = "<<delta.x<<", "<<delta.y<<endl;
     target->x=source->x+delta.x;
     target->y=source->y+delta.y;
     usleep(200);
