@@ -176,11 +176,12 @@ void hack::aim(){
         theirPos.x = theirBones.x;
         theirPos.y = theirBones.y;
         theirPos.z = theirBones.z;
-        if(enemyLifeState!=LIFE_ALIVE||shotsFired>1){
+        if(enemyLifeState!=LIFE_ALIVE||shotsFired!=0){
             acquiring=false;
+            cout<<shotsFired<<endl;
         }
         //cout<<"not ignorning"<<endl;
-        if(AltTwo==5||acquiring){
+        if(AltTwo==5){
             //cout<<"1fov: "<<fov<<" lowestDistance: "<<lowestDistance<<endl;
             aimDelta=calcAngle(&myPos,&theirPos);
             aimDelta.x -=viewAngle.x+(punch.x*2);
@@ -207,10 +208,15 @@ void hack::aim(){
             else{
                 shouldShoot=true;
             }
-            if(shouldShoot&&!acquiring){
+            if(shouldShoot){
                 csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
                 usleep(2000);
                 cout<<"shooting"<<endl;
+            }
+        }
+        if(AltTwo==4){
+            if(!shouldShoot){
+                csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
             }
             if(acquiring&&shouldShoot){
                 csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
@@ -219,11 +225,6 @@ void hack::aim(){
                 usleep(200);
                 acquiring=false;
                 cout<<"should be shooting...."<<endl;
-            }
-        }
-        else if(AltTwo==4){
-            if(!shouldShoot){
-                csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
             }
             isAiming=false;
         }
