@@ -13,3 +13,7 @@ install the dependencies.
 navigate to the base directory.
 
 run command make.
+
+
+NOTE:
+please make sure you have settings.cfg in the same directory as the terminal's cd. 
