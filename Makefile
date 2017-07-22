@@ -39,6 +39,7 @@ OBJ_DEBUG = $(OBJDIR_DEBUG)/main.o $(OBJDIR_DEBUG)/src/hack.o $(OBJDIR_DEBUG)/sr
 
 OBJ_RELEASE = $(OBJDIR_RELEASE)/main.o $(OBJDIR_RELEASE)/src/hack.o $(OBJDIR_RELEASE)/src/remote.o
 
+
 all: debug release
 
 clean: clean_debug clean_release
@@ -71,6 +72,7 @@ clean_debug:
 	rm -rf $(OBJDIR_DEBUG)/src
 
 before_release: 
+	cp settings.cfg bin/Debug
 	test -d bin/Release || mkdir -p bin/Release
 	test -d $(OBJDIR_RELEASE) || mkdir -p $(OBJDIR_RELEASE)
 	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
