@@ -192,9 +192,8 @@ void hack::aim(){
             if(lowestDistance<=fov&&lowestDistance!=-1.0){
                 acquiring = true;
             //cout<<std::dec<<"targeting closestEnt: "<<idclosestEnt<<endl;
-                if(lowestDistance<.1){
+                if(lowestDistance<.05){
                     shouldShoot=true;
-                    acquiring =false;
                     cout<<"shouldshoot: "<<shouldShoot<<endl;
                     cout<<acquiring<<endl;
                 }
@@ -210,14 +209,15 @@ void hack::aim(){
             }
             if(shouldShoot&&!acquiring){
                 csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
-                usleep(20000);
+                usleep(2000);
                 cout<<"shooting"<<endl;
             }
             if(acquiring&&shouldShoot){
                 csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
-                usleep(20000);
+                usleep(40000);
                 csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
                 usleep(200);
+                acquiring=false;
                 cout<<"should be shooting...."<<endl;
             }
         }
@@ -274,9 +274,9 @@ void hack::Smoothing(QAngle* source, QAngle* target){
     delta.y = target->y - source->y;
     cout<< "Delta.x, y = "<<delta.x<<", "<<delta.y<<endl;
     clampAngle(&delta);
-    //float sqDistance = sqrt((delta.x*delta.x)+(delta.y*delta.y));
-    delta.x*=percentSmoothing;//*(1/(sqDistance));
-    delta.y*=percentSmoothing;//*(1/(sqDistance));
+    float sqDistance = sqrt((delta.x*delta.x)+(delta.y*delta.y));
+    delta.x*=percentSmoothing*(1/(sqDistance));
+    delta.y*=percentSmoothing*(1/(sqDistance));
     clampAngle(&delta);
     cout<< "After Delta.x, y = "<<delta.x<<", "<<delta.y<<endl;
     target->x=source->x+delta.x;
