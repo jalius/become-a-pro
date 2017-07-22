@@ -275,8 +275,12 @@ void hack::Smoothing(QAngle* source, QAngle* target){
     cout<< "Delta.x, y = "<<delta.x<<", "<<delta.y<<endl;
     clampAngle(&delta);
     float sqDistance = sqrt((delta.x*delta.x)+(delta.y*delta.y));
-    delta.x*=percentSmoothing*(1/(sqDistance));
-    delta.y*=percentSmoothing*(1/(sqDistance));
+    float coefficient = percentSmoothing*(1/(sqDistance));
+    if(coefficient>1){
+        coefficient = 1;
+    }
+    delta.x*=coefficient;
+    delta.y*=coefficient;
     clampAngle(&delta);
     cout<< "After Delta.x, y = "<<delta.x<<", "<<delta.y<<endl;
     target->x=source->x+delta.x;
