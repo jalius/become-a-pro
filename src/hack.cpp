@@ -195,6 +195,7 @@ void hack::aim(){
                 acquiring = true;
             //cout<<std::dec<<"targeting closestEnt: "<<idclosestEnt<<endl;
                 if(lowestDistance<.1){
+                if(lowestDistance<.05){
                     shouldShoot=true;
                 }
                 newAngle=calcAngle(&myPos,&theirPos);
