@@ -112,7 +112,7 @@
 1499932718 source:/home/jalius/projects/csgo-multihack/src/remote.cpp
 	"remote.h"
 
-1500536026 source:/home/jalius/Projects/csgo-multihack/main.cpp
+1500880140 source:/home/jalius/Projects/csgo-multihack/main.cpp
 	<iostream>
 	<X11/Xlib.h>
 	<X11/Xutil.h>
@@ -128,7 +128,7 @@
 	<libconfig.h++>
 	<hack.h>
 
-1500620907 /home/jalius/Projects/csgo-multihack/include/hack.h
+1500877018 /home/jalius/Projects/csgo-multihack/include/hack.h
 	<X11/Xlib.h>
 	<X11/Xutil.h>
 	<X11/keysym.h>
@@ -161,11 +161,11 @@
 	<fstream>
 	<inttypes.h>
 
-1500536026 /home/jalius/Projects/csgo-multihack/include/types.h
+1500931351 /home/jalius/Projects/csgo-multihack/include/types.h
 
 1500536026 source:/home/jalius/Projects/csgo-multihack/src/remote.cpp
 	"remote.h"
 
-1500761587 source:/home/jalius/Projects/csgo-multihack/src/hack.cpp
+1500931433 source:/home/jalius/Projects/csgo-multihack/src/hack.cpp
 	"hack.h"
 

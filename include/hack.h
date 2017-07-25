@@ -101,6 +101,7 @@ public:
     bool glow();
     void trigger();
     void aim();
+    void setFov();
     void clampAngle(QAngle *angle);
     void setVAng(QAngle *newAngle);
     QAngle calcAngle(Vector *source, Vector *target);
@@ -179,6 +180,7 @@ public:
     float fov;
     bool rage;
     float percentSmoothing;
+    int viewFov;
 };
 
 #endif

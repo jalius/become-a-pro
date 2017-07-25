@@ -55,7 +55,7 @@ struct Entity {
     Vector m_vecViewOffset; // 0x13C
     Vector m_vecVelocity; // 0x148
     Vector m_vecBaseVelocity; // 0x154
-    QAngle m_angNetworkAngles; // 0x160
+    QAngle m_angNetworkAngles   ; // 0x160
     Vector m_vecNetworkOrigin; // 0x16C
 };
 

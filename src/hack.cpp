@@ -181,6 +181,7 @@ void hack::aim(){
             acquiring=false;
             //cout<<shotsFired<<endl;
         }
+        //cout<<"acquiring: "<<acquiring<<endl;
         //cout<<"not ignorning"<<endl;
         if(AltTwo==5||acquiring){
             //cout<<"1fov: "<<fov<<" lowestDistance: "<<lowestDistance<<endl;
@@ -190,13 +191,14 @@ void hack::aim(){
             clampAngle(&aimDelta);
             float xhairDistance = sqrt((aimDelta.x*aimDelta.x)+(aimDelta.y*aimDelta.y));
             lowestDistance=xhairDistance;
-            cout<<"2fov: "<<fov<<" lowestDistance: "<<lowestDistance<<endl;
+            //cout<<"2fov: "<<fov<<" lowestDistance: "<<lowestDistance<<endl;
             if(lowestDistance<=fov&&lowestDistance!=-1.0){
                 acquiring = true;
             //cout<<std::dec<<"targeting closestEnt: "<<idclosestEnt<<endl;
-                if(lowestDistance<.1){
                 if(lowestDistance<.05){
                     shouldShoot=true;
+                    //cout<<"shouldshoot: "<<shouldShoot<<endl;
+                    //cout<<acquiring<<endl;
                 }
                 newAngle=calcAngle(&myPos,&theirPos);
                 newAngle.x-=punch.x*2;
@@ -257,6 +259,7 @@ void hack::aim(){
         if(shouldShoot){
             csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
             usleep(10000);
+            //cout<<"shooting alt5"<<endl;
         }
     }
     else{
@@ -269,6 +272,7 @@ void hack::aim(){
         csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
         usleep(10000);
         acquiring=false;
+        //cout<<"should be shooting..."<<endl;
     }
     }
     }
@@ -392,6 +396,17 @@ void hack::noFlash(){
         unsigned long localPlayer = 0;
         csgo.Read((void*) m_addressOfLocalPlayer, &localPlayer, sizeof(long));
         csgo.Write((void*)(localPlayer+0xabf4), &flashMax, sizeof(float));
+    }
+}
+void hack::setFov(){
+    int curFov=0;
+    unsigned long localPlayer = 0;
+    csgo.Read((void*) m_addressOfLocalPlayer, &localPlayer, sizeof(long));
+    csgo.Read((void*)(localPlayer+0x3998), &curFov, sizeof(float));
+    if(curFov!=viewFov&&viewFov>0){
+        csgo.Write((void*)(localPlayer+0x3998), &viewFov, sizeof(float));
+        //csgo.Write((void*)(localPlayer+0x399C), &viewFov, sizeof(float));
+        //csgo.Write((void*)(localPlayer+0x3B14), &viewFov, sizeof(float));
     }
 }
 bool hack::glow(){
@@ -571,6 +586,7 @@ bool hack::checkKeys(){
 	}
 	else
     {
+        cout<<"CSGO was not found. Returning."<<endl;
         return false;
     }
 }
@@ -732,12 +748,12 @@ void hack::init(){
     bone = ::atof(getConfigValue("bone").c_str());
 	fov = ::atof(getConfigValue("fov").c_str());
 	flashMax = ::atof(getConfigValue("flash_max").c_str());
+	viewFov = ::atof(getConfigValue("custom_fov").c_str());
 	percentSmoothing = ::atof(getConfigValue("aim_smooth_percent").c_str());
 	if(flashMax<0||flashMax>255)
     {
         flashMax=70;
     }
-
 	spotted = 1;
 	entityInCrossHair = false;
 	isAiming=false;
