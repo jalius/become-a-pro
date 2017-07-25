@@ -752,7 +752,12 @@ void hack::init(){
 	percentSmoothing = ::atof(getConfigValue("aim_smooth_percent").c_str());
 	if(flashMax<0||flashMax>255)
     {
-        flashMax=70;
+        flashMax=255;
+        cout<<"Flash Max setting out of bounds (0-255). \nSetting flashMax to 255."<<endl;
+    }
+    if(percentSmoothing>1||percentSmoothing<0){
+        percentSmoothing = 1;
+        cout<<"smoothing percent out of bounds (less than 1 and greater than 0). \nSetting percentSmoothing to 1."<<endl;
     }
 	spotted = 1;
 	entityInCrossHair = false;
