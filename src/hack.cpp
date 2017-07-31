@@ -407,14 +407,23 @@ void hack::setHands(){
     }
 }
 void hack::setFov(){
-    int curFov=0;
+    int scope1 = viewFov/2;
+    int scope2 = viewFov/3;
+    int isScoped = 0;
     unsigned long localPlayer = 0;
     csgo.Read((void*) m_addressOfLocalPlayer, &localPlayer, sizeof(long));
-    csgo.Read((void*)(localPlayer+0x3998), &curFov, sizeof(float));
-    if(curFov!=viewFov&&viewFov>0){
-        csgo.Write((void*)(localPlayer+0x3998), &viewFov, sizeof(float));
+    csgo.Read((void*)(localPlayer+0x4164), &isScoped, sizeof(long));
+    if(viewFov>0&&isScoped==0){
+        cout<<std::dec<<viewFov<<endl;
+        csgo.Write((void*)(localPlayer+0x3998), &viewFov, sizeof(long));
         //csgo.Write((void*)(localPlayer+0x399C), &viewFov, sizeof(float));
         //csgo.Write((void*)(localPlayer+0x3B14), &viewFov, sizeof(float));
+    }
+    else if(isScoped==1){
+        csgo.Write((void*)(localPlayer+0x3998), &scope1, sizeof(long));
+    }
+    else if (isScoped==2){
+        csgo.Write((void*)(localPlayer+0x3998), &scope2, sizeof(long));
     }
 }
 bool hack::glow(){
@@ -759,6 +768,7 @@ void hack::init(){
 	viewFov = ::atof(getConfigValue("custom_fov").c_str());
 	percentSmoothing = ::atof(getConfigValue("aim_smooth").c_str());
 	noHands =::atof(getConfigValue("no_hands").c_str());
+
 	//check setting boundries
 	if(flashMax<0||flashMax>100)
     {

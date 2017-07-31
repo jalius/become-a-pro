@@ -38,13 +38,13 @@ void bhopLoop(){
 void multiQuickLoop(){
     for(;;){
         h.trigger();
+        h.setFov();
         std::this_thread::sleep_for(std::chrono::microseconds(30));
     }
 }
 void multiSlowLoop(){
     while(true){
         h.noFlash();
-        h.setFov();
         h.setHands();
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     }
