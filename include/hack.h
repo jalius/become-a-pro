@@ -31,6 +31,8 @@ using namespace libconfig;
 #define LIFE_RESPAWNABLE		3
 #define LIFE_DISCARDBODY		4
 
+#define ON_GROUND (1<<0)
+
 #define MAX_TRAIL_LENGTH		30
 #define MAX_PLAYER_NAME_LENGTH		128
 
@@ -102,6 +104,8 @@ public:
     void trigger();
     void aim();
     void setFov();
+    void setHands();
+
     void clampAngle(QAngle *angle);
     void setVAng(QAngle *newAngle);
     QAngle calcAngle(Vector *source, Vector *target);
@@ -181,6 +185,7 @@ public:
     bool rage;
     float percentSmoothing;
     int viewFov;
+    bool noHands;
 };
 
 #endif

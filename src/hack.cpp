@@ -360,15 +360,15 @@ void hack::clampAngle(QAngle *angle){
 }
 void hack::bhop(){
     unsigned int iAlt1Status = 0 ;
-    int onGround = 0;
+    int m_fFlags = 0;
     unsigned long localPlayer = 0;
     csgo.Read((void*) m_addressOfLocalPlayer, &localPlayer, sizeof(long));
 
     csgo.Read((void*)(m_addressOfAlt1), &iAlt1Status, sizeof(int));
-    csgo.Read((void*)(localPlayer+0x138), &onGround, sizeof(unsigned char));
+    csgo.Read((void*)(localPlayer+0x138), &m_fFlags, sizeof(int));
     if(ShouldBhop==true){
         //cout<<"\nalt1: "<<iAlt1Status<<" \nonGround: "<<onGround<<endl;
-        if(iAlt1Status==5&&onGround>0){
+        if(iAlt1Status==5&&(m_fFlags&ON_GROUND)){
             //cout<<"jumping\n:)"<<endl;
             csgo.Write((void*)((unsigned long)m_addressOfJump),&toggleOn,sizeof(int));
             this_thread::sleep_for(chrono::microseconds(500));
@@ -396,6 +396,14 @@ void hack::noFlash(){
         unsigned long localPlayer = 0;
         csgo.Read((void*) m_addressOfLocalPlayer, &localPlayer, sizeof(long));
         csgo.Write((void*)(localPlayer+0xabf4), &flashMax, sizeof(float));
+    }
+}
+void hack::setHands(){
+    if(noHands){
+        int zero_ = 0;
+        unsigned long localPlayer = 0;
+        csgo.Read((void*) m_addressOfLocalPlayer, &localPlayer, sizeof(long));
+        csgo.Write((void*)(localPlayer+0x28c), &zero_, sizeof(char));
     }
 }
 void hack::setFov(){
@@ -749,16 +757,28 @@ void hack::init(){
 	fov = ::atof(getConfigValue("fov").c_str());
 	flashMax = ::atof(getConfigValue("flash_max").c_str());
 	viewFov = ::atof(getConfigValue("custom_fov").c_str());
-	percentSmoothing = ::atof(getConfigValue("aim_smooth_percent").c_str());
-	if(flashMax<0||flashMax>255)
+	percentSmoothing = ::atof(getConfigValue("aim_smooth").c_str());
+	noHands =::atof(getConfigValue("no_hands").c_str());
+	//check setting boundries
+	if(flashMax<0||flashMax>100)
     {
-        flashMax=255;
-        cout<<"Flash Max setting out of bounds (0-255). \nSetting flashMax to 255."<<endl;
+        flashMax=100;
+        cout<<"Flash Max setting out of bounds (0%-100%). \nSetting flashMax to 100%."<<endl;
     }
-    if(percentSmoothing>1||percentSmoothing<0){
-        percentSmoothing = 1;
-        cout<<"smoothing percent out of bounds (less than 1 and greater than 0). \nSetting percentSmoothing to 1."<<endl;
+    if(percentSmoothing>100||percentSmoothing<0){
+        percentSmoothing = 100;
+        cout<<"smoothing percent out of bounds (0%-100%). \nSetting percentSmoothing to 100%."<<endl;
     }
+    if(fov<0){
+        fov = 0;
+    }
+    if(fov>180){
+        fov = 180;
+    }
+    //scale settings
+    percentSmoothing/=100;
+    flashMax*=2.55;
+
 	spotted = 1;
 	entityInCrossHair = false;
 	isAiming=false;
