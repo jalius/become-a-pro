@@ -27,7 +27,7 @@ void hack::aim(){
     shouldShoot = false;
     char myLifeXD = LIFE_DEAD;
     int AltTwo;
-    bool shouldIgnore= true;
+    //bool shouldIgnore= true;
     int weaponID;
     csgo.Read((void*)m_addressOfAlt2,&AltTwo,sizeof(long));
     /*if(localPlayer!=0){
@@ -43,7 +43,7 @@ void hack::aim(){
     csgo.Read((void*)hack::basePointerOfViewAngle,&one,sizeof(long));
     csgo.Read((void*)one+serverDetail,&two,sizeof(long));
     csgo.Read((void*)two+0x4308,&(hack::addressOfViewAngle),sizeof(long));
-    csgo.Read((void*)localPlayer+0x4150,&addressOfWeaponThing,sizeof(long));
+    //csgo.Read((void*)localPlayer+0x4150,&addressOfWeaponThing,sizeof(long));
     csgo.Read((void*)addressOfWeaponThing+0x178,&weaponID,sizeof(int));
     hack::addressOfViewAngle+=0x8e20;
 
@@ -65,9 +65,9 @@ void hack::aim(){
     punchDelta.x = punch.x-hack::oldPunch.x;
     punchDelta.y = punch.y-hack::oldPunch.y;
 
-    shouldIgnore = IgnoreWeapon(weaponID);
+    //shouldIgnore = IgnoreWeapon(weaponID);
 
-	if((isAiming&&!rage)||shouldIgnore){
+	if((isAiming&&!rage)){
         myPos.x = myEnt.m_vecNetworkOrigin.x;
         myPos.y = myEnt.m_vecNetworkOrigin.y;
         myPos.z = myEnt.m_vecNetworkOrigin.z + myEnt.m_vecViewOffset.z;
@@ -170,11 +170,7 @@ void hack::aim(){
 	}//else if (!isAiming)
 
     //cout<<std::dec<<"\nidclosestEnt: "<<idclosestEnt<<endl;
-    if((!foundTarget&&isAiming)||idclosestEnt==0||shouldIgnore){
-        bool shouldAutoShoot = ShouldAutoShoot(weaponID);
-        cout<<"weaponID "<<weaponID<<endl;
-        cout<<"shouldAutoShoot "<<shouldAutoShoot<<endl;
-        if(shouldAutoShoot){
+    if((!foundTarget&&isAiming)||idclosestEnt==0){
         if(AltTwo==5){
             csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
         }
@@ -183,14 +179,6 @@ void hack::aim(){
             /*newAngle.x-=punch.x;
             newAngle.y-=punch.y;*/
             isAiming=false;
-        }
-        }
-        else{
-            if(AltTwo==5){
-            csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
-            this_thread::sleep_for(chrono::milliseconds(20));
-            csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
-        }
         }
     }
     else{
