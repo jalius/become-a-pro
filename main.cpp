@@ -19,13 +19,13 @@ hack h;
 
 void glowLoop(){
     for(;;){
-        h.glow();
+        //h.glow();
         std::this_thread::sleep_for(std::chrono::microseconds(50));
     }
 }
 void aimLoop(){
     for(;;){
-        h.aim();
+        //h.aim();
         std::this_thread::sleep_for(std::chrono::microseconds(30));
     }
 }
