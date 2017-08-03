@@ -111,6 +111,9 @@ public:
     QAngle calcAngle(Vector *source, Vector *target);
     BoneMatrix getBones(void* bonePtr, int bone);
     void Smoothing(QAngle* source,QAngle* target);
+    float realDistanceFov(Vector*source, Vector*target);
+    bool IgnoreWeapon(int iWeaponID);
+    bool ShouldAutoShoot(int iWeaponID);
 
     Entity entities[64];
     void* bonePtrs[64];
@@ -168,6 +171,7 @@ public:
     unsigned long m_addressOfJump;
     unsigned long basePointerOfViewAngle;
     unsigned long addressServerDetail;
+    unsigned long addressIsConnected;
 
     //dynamic addresses
     unsigned long addressOfViewAngle;
