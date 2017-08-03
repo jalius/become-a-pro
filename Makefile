@@ -22,10 +22,10 @@ LIB_DEBUG = $(LIB)
 LDFLAGS_DEBUG = $(LDFLAGS) -lX11 -lconfig++ -lXtst -lpthread
 OBJDIR_DEBUG = obj/Debug
 DEP_DEBUG = 
-OUT_DEBUG = bin/Debug/MultiHackCsgo
+OUT_DEBUG = bin/Debug/become-a-pro
 
 INC_RELEASE = $(INC) -Iinclude
-CFLAGS_RELEASE = $(CFLAGS) -O2 -lpthread
+CFLAGS_RELEASE = $(CFLAGS) -O2 -std=c++11-lpthread
 RESINC_RELEASE = $(RESINC)
 RCFLAGS_RELEASE = $(RCFLAGS)
 LIBDIR_RELEASE = $(LIBDIR)
@@ -33,7 +33,7 @@ LIB_RELEASE = $(LIB)
 LDFLAGS_RELEASE = $(LDFLAGS) -s
 OBJDIR_RELEASE = obj/Release
 DEP_RELEASE = 
-OUT_RELEASE = bin/Release/MultiHackCsgo
+OUT_RELEASE = bin/Release/become-a-pro
 
 OBJ_DEBUG = $(OBJDIR_DEBUG)/main.o $(OBJDIR_DEBUG)/src/hack.o $(OBJDIR_DEBUG)/src/remote.o
 
@@ -48,7 +48,9 @@ before_debug:
 	test -d bin/Debug || mkdir -p bin/Debug
 	test -d $(OBJDIR_DEBUG) || mkdir -p $(OBJDIR_DEBUG)
 	test -d $(OBJDIR_DEBUG)/src || mkdir -p $(OBJDIR_DEBUG)/src
-
+	cp settings_example.cfg bin/Debug
+	mv bin/Debug/settings_example.cfg bin/Debug/settings.cfg
+	
 after_debug: 
 
 debug: before_debug out_debug after_debug
@@ -72,10 +74,11 @@ clean_debug:
 	rm -rf $(OBJDIR_DEBUG)/src
 
 before_release: 
-	cp settings.cfg bin/Debug
 	test -d bin/Release || mkdir -p bin/Release
 	test -d $(OBJDIR_RELEASE) || mkdir -p $(OBJDIR_RELEASE)
 	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
+	cp settings_example.cfg bin/Release
+	mv bin/Release/settings_example.cfg bin/Release/settings.cfg
 
 after_release: 
 
