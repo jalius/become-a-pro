@@ -13,7 +13,7 @@ string getConfigValue(string property) {
 }
 void hack::aim(){
     int isConnected;
-    csgo.Read((void*)client.start+0x1D089C0,&isConnected,sizeof(int));
+    csgo.Read((void*)addressIsConnected,&isConnected,sizeof(int));
     if(isConnected!=1){
         return;
     }
@@ -23,22 +23,28 @@ void hack::aim(){
     unsigned int shotsFired;
     BoneMatrix theirBones;
     unsigned long localPlayer = 0;
+    unsigned long addressOfWeaponThing = 0;
     shouldShoot = false;
     char myLifeXD = LIFE_DEAD;
     int AltTwo;
+    bool shouldIgnore= true;
+    int weaponID;
     csgo.Read((void*)m_addressOfAlt2,&AltTwo,sizeof(long));
-    if(localPlayer!=0){
+    /*if(localPlayer!=0){
         csgo.Read((void*)(unsigned long)localPlayer,&myLifeXD,sizeof(char));
     }
     if(myLifeXD!=LIFE_ALIVE){
         //return;
-    }
+    }*/
+
     //cout<<myLifeXD<<endl;
     csgo.Read((void*) m_addressOfLocalPlayer, &localPlayer, sizeof(long));
     csgo.Read((void*)hack::addressServerDetail,&serverDetail, sizeof(int));
     csgo.Read((void*)hack::basePointerOfViewAngle,&one,sizeof(long));
     csgo.Read((void*)one+serverDetail,&two,sizeof(long));
     csgo.Read((void*)two+0x4308,&(hack::addressOfViewAngle),sizeof(long));
+    csgo.Read((void*)localPlayer+0x4150,&addressOfWeaponThing,sizeof(long));
+    csgo.Read((void*)addressOfWeaponThing+0x178,&weaponID,sizeof(int));
     hack::addressOfViewAngle+=0x8e20;
 
     csgo.Read((void*)(unsigned long)localPlayer,&myEnt,sizeof(Entity));
@@ -50,13 +56,18 @@ void hack::aim(){
     csgo.Read((void*)(unsigned long)addressOfViewAngle, &(hack::viewAngle),sizeof(QAngle));
 
     char enemyLifeState=LIFE_DEAD;
+    if(bonePtrs[idclosestEnt]-0x2c70+0x293){
+        csgo.Read((void*)bonePtrs[idclosestEnt]-0x2c70+0x293,&enemyLifeState,sizeof(char));
+    }
 
-    csgo.Read((void*)bonePtrs[idclosestEnt]-0x2c70+0x293,&enemyLifeState,sizeof(char));
 
 	hack::CGlowObjectManager manager;
     punchDelta.x = punch.x-hack::oldPunch.x;
     punchDelta.y = punch.y-hack::oldPunch.y;
-	if(isAiming&&!rage){
+
+    shouldIgnore = IgnoreWeapon(weaponID);
+
+	if((isAiming&&!rage)||shouldIgnore){
         myPos.x = myEnt.m_vecNetworkOrigin.x;
         myPos.y = myEnt.m_vecNetworkOrigin.y;
         myPos.z = myEnt.m_vecNetworkOrigin.z + myEnt.m_vecViewOffset.z;
@@ -94,7 +105,7 @@ void hack::aim(){
             if (ent.m_iTeamNum == 2 || ent.m_iTeamNum == 3) {
                 if(ent.m_iHealth>0&&ent.ID<=64&&ent.ID>0){
                     entities[ent.ID]=ent;
-                    bonePtrs[ent.ID]=g_glow[i].m_pEntity+0x2c70;
+                    bonePtrs[ent.ID]=g_glow[i].m_pEntity+0x2c70;//bone matrix offset 2c70
                 }
 			}
         }
@@ -159,7 +170,11 @@ void hack::aim(){
 	}//else if (!isAiming)
 
     //cout<<std::dec<<"\nidclosestEnt: "<<idclosestEnt<<endl;
-    if(!foundTarget&&isAiming||idclosestEnt==0){
+    if((!foundTarget&&isAiming)||idclosestEnt==0||shouldIgnore){
+        bool shouldAutoShoot = ShouldAutoShoot(weaponID);
+        cout<<"weaponID "<<weaponID<<endl;
+        cout<<"shouldAutoShoot "<<shouldAutoShoot<<endl;
+        if(shouldAutoShoot){
         if(AltTwo==5){
             csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
         }
@@ -168,6 +183,14 @@ void hack::aim(){
             /*newAngle.x-=punch.x;
             newAngle.y-=punch.y;*/
             isAiming=false;
+        }
+        }
+        else{
+            if(AltTwo==5){
+            csgo.Write((void*)m_addressOfForceAttack,&toggleOn,sizeof(int));
+            this_thread::sleep_for(chrono::milliseconds(20));
+            csgo.Write((void*)m_addressOfForceAttack,&toggleOff,sizeof(int));
+        }
         }
     }
     else{
@@ -233,13 +256,15 @@ void hack::aim(){
     //rcs block
     if(!isAiming&&alwaysRCS){
     if(alwaysRCS){
-        if((punchDelta.y!=0.0||punchDelta.x!=0.0)){//&&shotsFired>0
+        if((punchDelta.y!=0.0||punchDelta.x!=0.0)&&(shotsFired>1)){
+                cout<<shotsFired<<endl;
                 /*if(shotsFired>10){
                     newAngle.x -=punchDelta.x*1.7;//if shots fired greater than 10 then we will reduce the coefficient (trying to make ourselves seem legit)
                     newAngle.y -=punchDelta.y*1.5;
                     newAngle.z = 0;
                 }
                 else{*/
+                    cout<<"x: "<<punchDelta.x<<" y: "<<punchDelta.y<<endl;
                     newAngle.x -=punchDelta.x*2;//new camera angle is the old camera angle minus the change in view punch angle *2 (because it works)
                     newAngle.y -=punchDelta.y*2;
                     newAngle.z = 0;
@@ -276,6 +301,19 @@ void hack::aim(){
     }
     }
     }
+}
+float hack::realDistanceFov(Vector* source, Vector* target){
+
+}
+bool hack::IgnoreWeapon( int iWeaponID )
+{
+    return( iWeaponID == WEAPON_NONE || iWeaponID == WEAPON_KNIFE || iWeaponID == WEAPON_FLASHBANG || iWeaponID == WEAPON_CT_MOLOTOV || iWeaponID == WEAPON_SMOKE
+        || iWeaponID == WEAPON_HEGRENADE || iWeaponID == WEAPON_DECOY || iWeaponID == WEAPON_T_MOLOTOV || iWeaponID == WEAPON_C4 || iWeaponID == WEAPON_KNIFEGG );
+}
+bool hack::ShouldAutoShoot( int iWeaponID )
+{
+    return( iWeaponID == WEAPON_DUAL|| iWeaponID == WEAPON_FIVE7 || iWeaponID == WEAPON_GLOCK
+        || iWeaponID == WEAPON_P250_CZ75 || iWeaponID == WEAPON_TEC9 || iWeaponID == WEAPON_HKP2000 );
 }
 void hack::Smoothing(QAngle* source, QAngle* target){
     QAngle delta;
@@ -407,14 +445,16 @@ void hack::setHands(){
     }
 }
 void hack::setFov(){
+    if(viewFov==0){
+        return;
+    }
     int scope1 = viewFov/2;
     int scope2 = viewFov/3;
     int isScoped = 0;
     unsigned long localPlayer = 0;
     csgo.Read((void*) m_addressOfLocalPlayer, &localPlayer, sizeof(long));
     csgo.Read((void*)(localPlayer+0x4164), &isScoped, sizeof(long));
-    if(viewFov>0&&isScoped==0){
-        cout<<std::dec<<viewFov<<endl;
+    if(isScoped==0){
         csgo.Write((void*)(localPlayer+0x3998), &viewFov, sizeof(long));
         //csgo.Write((void*)(localPlayer+0x399C), &viewFov, sizeof(float));
         //csgo.Write((void*)(localPlayer+0x3B14), &viewFov, sizeof(float));
@@ -428,7 +468,7 @@ void hack::setFov(){
 }
 bool hack::glow(){
     int isConnected;
-    csgo.Read((void*)client.start+0x1D089C0,&isConnected,sizeof(int));
+    csgo.Read((void*)addressIsConnected,&isConnected,sizeof(int));//+600
     if(isConnected!=1){
         return false;
     }
@@ -743,7 +783,13 @@ void hack::init(){
 
     addressServerDetail+=serverDetailOffset;
 
-    cout<<"client.start: "<<std::hex<<client.start<<endl;
+    unsigned long foundIsConnectedcmp = (long)client.find(csgo,
+        "\x89\x75\xb8\x80\x3d\x00\x00\x00\x00\x00\x89\x55\xbc",
+         "xxxxx????xxxx");
+    cout<<std::hex<<foundIsConnectedcmp<<endl;
+    addressIsConnected = csgo.GetCallAddress((void*)foundIsConnectedcmp+0x5) + 0x00000001;
+
+    cout<<std::hex<<"client.start: "<<std::hex<<client.start<<endl;
     cout<<"engine.start: "<<engine.start<<endl;
 	cout<<"GlowPointer address: "<<m_addressOfGlowPointer<<endl;
 	cout<<"LocalPlayer pointer address: "<< m_addressOfLocalPlayer<<endl;
@@ -754,14 +800,15 @@ void hack::init(){
 	cout<<"ForceAttack address: "<< m_addressOfForceAttack<<endl;
 	cout<<"Alt1 address: "<< m_addressOfAlt1<<endl;
 	cout<<"Alt2 address: "<< m_addressOfAlt2<<endl;
+	cout<<"addressIsConnected: "<<addressIsConnected<<endl;
 
     //settings
 	ShouldGlow = true;
 	ShouldTrigger = false;
 	ShouldBhop = true;
 	NoFlash = true;
-	alwaysRCS = false;
 	rage=false;
+	alwaysRCS = false;
     bone = ::atof(getConfigValue("bone").c_str());
 	fov = ::atof(getConfigValue("fov").c_str());
 	flashMax = ::atof(getConfigValue("flash_max").c_str());
@@ -788,8 +835,10 @@ void hack::init(){
     //scale settings
     percentSmoothing/=100;
     flashMax*=2.55;
+    cout<<"flashMax: "<<std::dec<<flashMax<<"/"<<255<<endl;
 
 	spotted = 1;
 	entityInCrossHair = false;
 	isAiming=false;
+
 }
