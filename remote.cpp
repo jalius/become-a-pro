@@ -123,6 +123,21 @@ namespace remote {
 		return 0;
 	}
 
+    unsigned long Handle::GetShortJmpAddress(void* address) { //give me the address after the jump
+        int code = 0;
+        if (Read((char*) address, &code, sizeof(unsigned int))) {
+            if(code<=0x7f){
+                return (unsigned long)code + (unsigned long) address + 1;
+            }
+            else if(code>=0x80){
+                return (unsigned long)code-0xFF + (unsigned long) address;
+            }
+        }
+
+        return 0;
+    }
+
+
 	MapModuleMemoryRegion* Handle::GetRegionOfAddress(void* address) {
 		for (size_t i = 0; i < regions.size(); i++) {
 			if (regions[i].start > (unsigned long) address && (regions[i].start + regions[i].end) <= (unsigned long) address) {

@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.0.0)
+project(become-a-pro VERSION 0.0.0)
+
+include(CTest)
+enable_testing()
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -std=c++14 -Wall")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG -std=c++14")
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})
+file(GLOB SOURCE_FILES "*.cpp" "*.h")
+add_executable(become-a-pro ${SOURCE_FILES})
+target_link_libraries(become-a-pro -lX11 -lconfig++ -lXtst -lboost_system -lpthread -lboost_thread)

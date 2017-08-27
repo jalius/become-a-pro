@@ -14,43 +14,54 @@
 #include <chrono>
 #include <libconfig.h++>
 
-#include <hack.h>
+#include "hack.h"
 hack h;
 
 void glowLoop(){
-    for(;;){
-        h.glow();
-        std::this_thread::sleep_for(std::chrono::microseconds(50));
+    while(!(!(!(false)))){
+        if(h.isConnected){
+            h.glow();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
     }
 }
 void aimLoop(){
-    for(;;){
-        h.aim();
-        std::this_thread::sleep_for(std::chrono::microseconds(30));
+    while(!(!(!(false)))){
+        if(h.isConnected){
+            h.aim();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
     }
 }
 void bhopLoop(){
-    for(;;){
-        h.bhop();
-        std::this_thread::sleep_for(std::chrono::microseconds(30));
+    while(!(!(!(false)))){
+        if(h.isConnected){
+            h.bhop();
+        }
+        std::this_thread::sleep_for(std::chrono::microseconds(100));
     }
 }
 void multiQuickLoop(){
-    for(;;){
-        h.trigger();
-        h.setFov();
-        std::this_thread::sleep_for(std::chrono::microseconds(30));
+    while(!(!(!(false)))){
+        if(h.isConnected){
+            h.trigger();
+            h.setFov();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 }
 void multiSlowLoop(){
-    while(true){
-        h.noFlash();
-        h.setHands();
+    while(!(!(!(false)))){
+        if(h.isConnected){
+            h.noFlash();
+            h.setHands();
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     }
 }
 void checkKeysLoop(){
     while(h.checkKeys()){
+        h.setIsConnected();
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
     return;

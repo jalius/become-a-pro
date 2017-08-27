@@ -16,9 +16,17 @@
 #include <iostream>
 #include <atomic>
 #include <cmath>
+#include <mutex>
+#include <math.h>
+#include <memory.h>
+#include <boost/thread/locks.hpp>
+#include <boost/thread/shared_mutex.hpp>
 
+#include "offsets.h"
 #include "remote.h"
 #include "types.h"
+#include "helper.h"
+
 
 using namespace std;
 using namespace libconfig;
@@ -106,63 +114,46 @@ public:
     void setFov();
     void setHands();
 
-    void clampAngle(QAngle *angle);
-    void setVAng(QAngle *newAngle);
-    QAngle calcAngle(Vector *source, Vector *target);
-    BoneMatrix getBones(void* bonePtr, int bone);
-    void Smoothing(QAngle* source,QAngle* target);
-    float realDistanceFov(Vector*source, Vector*target);
-    bool IgnoreWeapon(int iWeaponID);
-    bool ShouldAutoShoot(int iWeaponID);
+    void setVAng(QAngle *newAngle, unsigned long addressOfViewAngle);
+    int getClosestBone(unsigned long m_pStudioBones, std::vector<int> &bones, QAngle &curViewAngle, QAngle &aimPunch, Vector &myPos);
+    int getLifeState(unsigned long entityPtr);
 
-    Entity entities[64];
-    void* bonePtrs[64];
+    void setIsConnected();
+    std::atomic<bool> isConnected;
+
+    void readEntities(std::array<EntityInfo,64> &rentities);
+    void writeEntities(std::array<EntityInfo,64> &wentities);
+    bool getWorldToScreenData(std::array<EntityToScreen,64> &output);
+
+    boost::shared_mutex entities_access;
+    std::array<EntityInfo,64> entities;
+
+    std::array<std::pair<Vector,Vector>,64> screenPositions;
+
 
     remote::Handle csgo;
     Display* display;
+    Screen* screen;
     char keys[32];
     char lastkeys[32];
     remote::MapModuleMemoryRegion client;
     remote::MapModuleMemoryRegion engine;
 
     double* colors;
-	int keycodeBhop;
+    int keycodeBhop;
     int keycodeTrigger;
-	int keycodeGlow;
-	int keycodeNoFlash;
-	int keycodeRage;
-	int keycodeRCS;
+    int keycodeGlow;
+    int keycodeNoFlash;
+    int keycodeRage;
+    int keycodeRCS;
     unsigned char spotted;
     int toggleOn = 5;
     int toggleOff = 4;
 
     //
     std::atomic<bool> entityInCrossHair;
-    int myEntId;
-    QAngle viewAngle;//my view angle
-    QAngle oldPunch;
-    QAngle bulletViewAngle;
-    QAngle newAngle;
-    QAngle punch;
-    QAngle aimDelta;
-    QAngle punchDelta;
-    Vector theirPos;
-    Vector myPos;
-    Entity myEnt;
 
-    bool foundTarget;
-    bool shouldShoot;
-    bool isAiming;
-    bool acquiring;
-
-    Entity *closestEnt;
-    Entity *targetedEnt;
-    float lowestDistance;
-    float closestFootDistance;
-    unsigned int idclosestEnt;
-
-
-    //static addresses
+    //static addresses (set at hack::init())
     unsigned long m_addressOfGlowPointer;
     unsigned long m_addressOfLocalPlayer;
     unsigned long m_addressOfForceAttack;
@@ -173,23 +164,23 @@ public:
     unsigned long addressServerDetail;
     unsigned long addressIsConnected;
 
-    //dynamic addresses
-    unsigned long addressOfViewAngle;
-    //std::atomic<unsigned long> localPlayer;
-
     //settings
+    Config cfg;
     bool ShouldGlow;
     bool ShouldTrigger;
     bool ShouldBhop;
     bool NoFlash;
     bool alwaysRCS;
     int bone;
+    std::vector<int> bones;
     float flashMax;
     float fov;
     bool rage;
     float percentSmoothing;
     int viewFov;
     bool noHands;
+    bool resolver;
+    bool shootFriends;
 };
-
+extern hack h;
 #endif
