@@ -31,3 +31,11 @@
 settings\.cfg~
 
 settings\.cfg
+
+# ignore cmake files
+
+build
+
+# ignore exe
+
+become-a-pro
