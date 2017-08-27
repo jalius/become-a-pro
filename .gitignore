@@ -26,13 +26,8 @@
 *.exe
 *.out
 *.app
-settings\.cfg~
-bin/Debug/
 
-bin/Debug/
-
+# ignore config files
 settings\.cfg~
 
 settings\.cfg
-
-MultiHackCsgo\.layout
