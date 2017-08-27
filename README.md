@@ -12,11 +12,13 @@ install the dependencies.
 
 navigate to the base directory.
 
-run command "cmake ."
+run command "cmake .".
 
-run command "make"
+run command "make".
 
-run become-a-pro as super user "sudo ./become-a-pro"
+rename settings-example.cfg to settings.cfg and modify settings to your liking.
+
+run become-a-pro as super user "sudo ./become-a-pro".
 
 
 NOTE:
