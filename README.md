@@ -12,8 +12,12 @@ install the dependencies.
 
 navigate to the base directory.
 
-run command make.
+run command "cmake ."
+
+run command "make"
+
+run become-a-pro as super user "sudo ./become-a-pro"
 
 
 NOTE:
-please make sure you have settings.cfg in the same directory as the terminal's cd. 
+please make sure you have settings.cfg in the same directory as the terminal's cd, otherwise you will experience problems with libconfig.
