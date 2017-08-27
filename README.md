@@ -1,9 +1,9 @@
-csgo-multihack
+this is a cheat for the 64 bit linux csgo
 
 
 install additional dependencies:
 
-libx11-dev libx11-dev:i386 libxtst-dev libconfig++-dev build-essential
+libboost-all-dev libx11-dev libx11-dev:i386 libxtst-dev libconfig++-dev build-essential cmake
 
 
 how to build:
@@ -12,11 +12,13 @@ install the dependencies.
 
 navigate to the base directory.
 
-run command "cmake ."
+run command "cmake .".
 
-run command "make"
+run command "make".
 
-run become-a-pro as super user "sudo ./become-a-pro"
+rename settings-example.cfg to settings.cfg and modify settings to your liking.
+
+run become-a-pro as super user "sudo ./become-a-pro".
 
 
 NOTE:
