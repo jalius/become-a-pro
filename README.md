@@ -1,4 +1,4 @@
-csgo-multihack
+this is a cheat for the 64 bit linux csgo
 
 
 install additional dependencies:
