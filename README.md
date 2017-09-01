@@ -14,6 +14,13 @@ if your cmake is version 3 or higher you can skip this step:
 
 ```bash
 sudo add-apt-repository ppa:george-edison55/cmake-3.x
+```
+if cmake is installed:
+```bash
+sudo apt-get upgrade cmake
+```
+if cmake is not installed: 
+```bash
 sudo apt-get install cmake
 ```
 
