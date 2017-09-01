@@ -1,4 +1,4 @@
-this is a cheat for the 64 bit linux csgo
+this is a cheat for the 64 bit linux csgo (tested on ubuntu 14.04 and 16.04)
 
 
 install additional dependencies:
