@@ -13,12 +13,8 @@ if your cmake is version 3 or higher you can skip this step:
 
 
 ```bash
-wget http://www.cmake.org/files/v3.2/cmake-3.2.2.tar.gz
-tar xf cmake-3.2.2.tar.gz
-cd cmake-3.2.2
-./configure
-make
-sudo make install
+sudo add-apt-repository ppa:george-edison55/cmake-3.x
+sudo apt-get install cmake
 ```
 
 how to build:
