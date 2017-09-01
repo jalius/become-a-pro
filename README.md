@@ -9,7 +9,7 @@ install updated cmake:
 ```bash
 cmake --version 
 ```
-if your cmake is version 3 or higher you can skip the next step:
+if your cmake is version 3 or higher you can skip this step:
 
 
 ```bash
