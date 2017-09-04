@@ -17,13 +17,15 @@ run command:
 qmake ./become-a-pro_esp.pro
 ```
 run command: 
-```bashmake
+```bash
+make
 ```
 rename settings-example.cfg to settings.cfg and modify settings to your liking.
 
 run become-a-pro_esp as super user:
 
-```bash sudo ./become-a-pro_esp
+```bash 
+sudo ./become-a-pro_esp
 ```
 
 
