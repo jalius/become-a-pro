@@ -1,4 +1,3 @@
-# become-a-pro_esp
 this is a cheat for the 64 bit linux csgo (tested on ubuntu 14.04, 16.04, and 17.04)
 
 
