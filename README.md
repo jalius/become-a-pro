@@ -1,31 +1,53 @@
+# become-a-pro_esp
 this is a cheat for the 64 bit linux csgo (tested on ubuntu 14.04, 16.04, and 17.04)
 
 
 install additional dependencies:
 ```bash
-apt-get install libboost-all-dev libx11-dev libx11-dev:i386 libxtst-dev libconfig++-dev build-essential libqt4-dev qt4-qmake
+apt-get install libboost-all-dev libx11-dev libx11-dev:i386 libxtst-dev libconfig++-dev build-essential cmake
+```
+install updated cmake:
+```bash
+cmake --version 
+```
+if your cmake is version 3 or higher you can skip this step:
+
+
+```bash
+sudo add-apt-repository ppa:george-edison55/cmake-3.x
+sudo apt-get update
+```
+if cmake is installed:
+```bash
+sudo apt-get upgrade cmake
+```
+if cmake is not installed: 
+```bash
+sudo apt-get install cmake
 ```
 
 how to build:
 
 install the dependencies (above).
 
-navigate to the base directory (usually ~/become-a-pro_esp).
+navigate to the base directory (usually ~/become-a-pro).
 
 run command:
 ```bash
-qmake ./become-a-pro_esp.pro
+cmake .
 ```
+
 run command: 
 ```bash
 make
 ```
+
 rename settings-example.cfg to settings.cfg and modify settings to your liking.
 
-run become-a-pro_esp as super user:
+run become-a-pro as super user:
 
 ```bash 
-sudo ./become-a-pro_esp
+sudo ./become-a-pro
 ```
 
 
